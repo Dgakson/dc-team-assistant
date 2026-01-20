@@ -1,0 +1,113 @@
+# примеры API-запросов
+
+@baseUrl = http://127.0.0.1:8000
+
+###
+
+#  получение списка assets
+GET {{baseUrl}}/assets
+Content-Type: application/json
+   
+###
+
+# создание связи
+POST {{baseUrl}}/assets/to_device
+Content-Type: application/json
+
+{
+    "device_id": 147,
+    "asset_ids": [76,95],
+    "jira_task": "DC-1647"
+}
+
+### 
+
+# получение списка устройств
+GET {{baseUrl}}/device_types
+Content-Type: application/json
+
+###
+
+# создание устройства
+POST {{baseUrl}}/devices/create
+Content-Type: application/json
+
+[
+    {
+        "name": "test75",
+        "asset_tag": "OKKOS75",
+        "serial": "test75",
+        "location": 3,
+        "role": 2, 
+        "manufacturer": "Supermicro", 
+        "device_type": 4, 
+        "status": "inventory", 
+        "site": 9,
+        "custom_fields": {
+            "DeliveryTask": "TASK-2024-003",
+            "CommissioningDate": "2024-01-20"
+        }
+    }
+]
+
+###
+
+# Удаление устройства
+DELETE  {{baseUrl}}/devices/delete
+Content-Type: application/json
+
+{
+    "asset_tag": "OKKOS2120"
+}
+
+###
+
+# Создание кабелей
+POST {{baseUrl}}/cables/create
+Content-Type: application/json
+
+[
+    {"dev_a": "network_test", "port_a": "et-0/0/14", "dev_b": "test73", "port_b": "Gig-E 1", "int_type": "1000base-t"},
+    {"dev_a": "network_test", "port_a": "et-0/0/16", "dev_b": "test73", "port_b": "Gig-E 2", "int_type": "1000base-t"}
+]
+
+###
+
+#  получение списка сайтов
+GET {{baseUrl}}/site_location
+Content-Type: application/json
+
+###
+
+# 
+POST  {{baseUrl}}/assets/modernization
+Content-Type: application/json
+
+{
+    "asset_ids": [380], 
+    "device_id": 147, 
+    "jira_task": "test111"
+}
+
+###
+
+# 
+POST  {{baseUrl}}/assets/create
+Content-Type: application/json
+
+{
+    "items": [
+        {
+            "inventoryitem_type_id": 430,
+            "count": 2,
+            "serials": ["SN0012", "SN0021"]
+        },
+        {
+            "inventoryitem_type_id": 429,
+            "count": 3,
+            "serials": [] 
+        }
+    ],
+    "storage_location_id": 6,
+    "delivery_task": "input"
+}

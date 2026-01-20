@@ -1,0 +1,10 @@
+# DC Team Assistant Requirements
+
+django==5.2.5
+djangorestframework==3.16.1
+pynetbox==7.5.0
+requests==2.32.5
+python-dotenv==1.1.1
+streamlit==1.49.1
+pandas==2.3.2
+openpyxl==3.1.5
