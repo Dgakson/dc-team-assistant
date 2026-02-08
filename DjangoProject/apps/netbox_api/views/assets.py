@@ -30,11 +30,10 @@ class AssetDetailView(APIView):
         service = AssetsService()
         try:
             asset = service.get_asset_by_id(asset_id)
-            
+            return Response(asset)    
         except AssetsServiceError as e:
             return Response({"detail": str(e)}, status=404)
-        return Response(asset)
-
+        
 
 class AssetsCreateView(APIView):
     def post(self, request):
@@ -53,7 +52,7 @@ class AssetsCreateView(APIView):
         try:
             assets = service.create_assets(
                 items=items,
-                storage_location_id=storage_location_id,
+                storage_location_id=int(storage_location_id),
                 delivery_task=delivery_task
             )
 
@@ -79,6 +78,12 @@ class BaseAssetOperationView(APIView):
     client_method_name: str = None  # "assets_repair" или "assets_modernization"
 
     def post(self, request):
+        if not self.client_method_name:
+            return Response(
+                {"detail": "client_method_name не задан"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+        
         device_id = request.data.get("device_id")
         asset_ids = request.data.get("asset_ids")
         jira_task = request.data.get("jira_task")

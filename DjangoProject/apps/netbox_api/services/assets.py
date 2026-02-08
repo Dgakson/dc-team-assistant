@@ -10,6 +10,8 @@ class AssetsServiceError(Exception):
     pass
 
 class BaseService:
+    """Инициализация и общие методы"""
+
     def __init__(self):
         self.client = NetBoxClient()
         
@@ -18,14 +20,14 @@ class BaseService:
         Формирует карту: {site_name: {site_id, locations: {loc_name: loc_id}}}
         """
         site_location_map = {}
-        sites = self.client.get_sites()
+        sites = self.client.general.get_sites()
         for site in sites:
             site_location_map[site.name] = {
                 "site_id": site.id,
                 "locations": {}
             }
 
-        locations = self.client.get_locations()
+        locations = self.client.general.get_locations()
         for loc in locations:
             site_name = loc.site.name
             if site_name in site_location_map:
@@ -34,9 +36,8 @@ class BaseService:
         return site_location_map
 
 
-class AssetsService:
-    def __init__(self):
-        self.client = NetBoxClient()
+class AssetsService(BaseService):
+    """Методы для работы с Assets"""
 
     def _simplify_asset(self, asset):
         """Преобразует объект NetBox в простой словарь для frontend"""
@@ -58,18 +59,18 @@ class AssetsService:
 
     def get_assets(self, **filters):
         """Возвращает список упрощённых активов с применением фильтров"""
-        raw_assets = self.client.get_assets(**filters)
+        raw_assets = self.client.assets.get_assets(**filters)
         return [self._simplify_asset(a) for a in raw_assets]
 
     def get_asset_by_id(self, asset_id):
         """Возвращает один актив по id"""
-        asset = self.client.get_asset_by_id(asset_id)
+        asset = self.client.assets.get_asset_by_id(asset_id)
         if not asset:
             raise AssetsServiceError(f"Asset with id={asset_id} not found")
         return self._simplify_asset(asset)
 
     def get_asset_types(self):
-        return {at.model: at.id for at in self.client.get_asset_types()}
+        return {at.model: at.id for at in self.client.assets.get_asset_types()}
     
     def create_assets(
         self,
@@ -123,7 +124,7 @@ class AssetsService:
                     })
 
         try:
-            created_assets = self.client.create_assets(assets_to_create)
+            created_assets = self.client.assets.create_assets(assets_to_create)
             return [self._simplify_asset(a) for a in created_assets]
 
         except RequestError as e:
@@ -136,13 +137,13 @@ class AssetsService:
         jira_task: str,
     ) -> dict:
 
-        device = self.client.get_device(device_id)
+        device = self.client.devices.get_device(device_id)
         if not device:
             raise AssetsServiceError(f"Устройства device_id-{device_id} не найдено")
 
         assets = []
         for asset_id in asset_ids:
-            asset = self.client.get_asset_by_id(asset_id)
+            asset = self.client.assets.get_asset_by_id(asset_id)
             if not asset:
                 raise AssetsServiceError(f"Комплектующая asset_id-{asset_id} не найдена")
             if asset.status == "used":
@@ -161,7 +162,7 @@ class AssetsService:
         # ---- обновляем assets ----
 
         for asset in assets:
-            self.client.update_asset(
+            self.client.assets.update_asset(
                 asset,
                 {
                     "custom_fields": {
@@ -177,7 +178,7 @@ class AssetsService:
 
         modernization_date = date.today().isoformat()
 
-        self.client.update_device(
+        self.client.devices.update_device(
             device,
             {
                 "custom_fields": {
@@ -188,7 +189,7 @@ class AssetsService:
 
         # ---- journal ----
 
-        self.client.create_journal_entry(
+        self.client.general.create_journal_entry(
             {
                 "assigned_object_type": "dcim.device",
                 "assigned_object_id": device_id,
@@ -225,13 +226,13 @@ class AssetsService:
         jira_task: str,
     ) -> dict:
 
-        device = self.client.get_device(device_id)
+        device = self.client.devices.get_device(device_id)
         if not device:
             raise AssetsServiceError(f"Устройства device_id = {device_id} не найдено")
     
         assets = []
         for asset_id in asset_ids:
-            asset = self.client.get_asset_by_id(asset_id)
+            asset = self.client.assets.get_asset_by_id(asset_id)
             if not asset:
                 raise AssetsServiceError(f"Комплектующая asset_id = {asset_id} не найдена")
             if asset.status == "used":
@@ -249,17 +250,17 @@ class AssetsService:
 
         # ---- удаляем активы из NetBox ----
         for asset in assets:
-            self.client.delete_asset(asset)
+            self.client.assets.delete_asset(asset)
 
         # ---- обновляем device ----
         modernization_date = date.today().isoformat()
-        self.client.update_device(
+        self.client.devices.update_device(
             device,
             {"custom_fields": {"ModernizationDate": modernization_date}},
         )
 
         # ---- создаём journal entry ----
-        self.client.create_journal_entry(
+        self.client.general.create_journal_entry(
             {
                 "assigned_object_type": "dcim.device",
                 "assigned_object_id": device_id,

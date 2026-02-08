@@ -1,9 +1,63 @@
 # примеры API-запросов
 
-@baseUrl = http://127.0.0.1:8000/api
+@baseUrl = http://127.0.0.1:8000
+@authUrl = http://127.0.0.1:8000/auth
+@email = e.ryzhkov@okko.tv
+@password = L00pback
+@access = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcwNTcyODY3LCJpYXQiOjE3NzA1NzI1NjcsImp0aSI6ImMxOTAwZTExZWJlZjRlN2M5YmY3NzQ3M2NmYTcxNzRjIiwidXNlcl9pZCI6IjEifQ.2Ooh4C3SeJ-3gKNIV_bLDJawBvkNAvI5IXZ4S0zVtf8
 
 ###
 
+# JWT: получить токены
+POST {{authUrl}}/token/
+Content-Type: application/json
+
+{
+    "email": "{{email}}",
+    "password": "{{password}}"
+}
+
+###
+
+# JWT: обновить access token
+POST {{authUrl}}/token/refresh/
+Content-Type: application/json
+
+{
+    "refresh": "YOUR_REFRESH_TOKEN"
+}
+
+###
+
+# JWT: профиль текущего пользователя
+GET {{authUrl}}/me/
+Authorization: Bearer {{access}}
+Content-Type: application/json
+
+###
+
+# JWT: регистрация пользователя (только админ)
+POST {{authUrl}}/register/
+Authorization: Bearer {{access}}
+Content-Type: application/json
+
+{
+    "email": "newuser@example.com",
+    "password": "StrongPass123"
+}
+
+
+
+### GENERAL
+
+#  получение списка сайтов
+GET {{baseUrl}}/site_location
+Content-Type: application/json
+
+
+
+### ASSETS
+ 
 #  получение списка assets
 GET {{baseUrl}}/assets
 Content-Type: application/json
@@ -58,26 +112,7 @@ Content-Type: application/json
 
 
 
-###
-
-#  получение списка сайтов
-GET {{baseUrl}}/site_location
-Content-Type: application/json
-
-###
-
-# 
-POST  {{baseUrl}}/assets/modernization
-Content-Type: application/json
-
-{
-    "asset_ids": [380], 
-    "device_id": 147, 
-    "jira_task": "test111"
-}
-
-
-### 
+###  DEVICES
 
 # получение списка устройств
 GET {{baseUrl}}/device_types
@@ -117,7 +152,8 @@ Content-Type: application/json
     "asset_tag": "OKKOS2120"
 }
 
-###
+
+### CABLES
 
 # Создание кабелей
 POST {{baseUrl}}/cables/create
