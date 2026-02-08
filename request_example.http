@@ -1,9 +1,10 @@
 # примеры API-запросов
 
-@baseUrl = http://127.0.0.1:8000
+@baseUrl = http://127.0.0.1:8000/
+@inventoryUrl = http://127.0.0.1:8000/inventory
 @authUrl = http://127.0.0.1:8000/auth
 @email = e.ryzhkov@okko.tv
-@password = L00pback
+@password = 
 @access = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNzcwNTcyODY3LCJpYXQiOjE3NzA1NzI1NjcsImp0aSI6ImMxOTAwZTExZWJlZjRlN2M5YmY3NzQ3M2NmYTcxNzRjIiwidXNlcl9pZCI6IjEifQ.2Ooh4C3SeJ-3gKNIV_bLDJawBvkNAvI5IXZ4S0zVtf8
 
 ###
@@ -51,7 +52,7 @@ Content-Type: application/json
 ### GENERAL
 
 #  получение списка сайтов
-GET {{baseUrl}}/site_location
+GET {{inventoryUrl}}/site_location
 Content-Type: application/json
 
 
@@ -59,13 +60,13 @@ Content-Type: application/json
 ### ASSETS
  
 #  получение списка assets
-GET {{baseUrl}}/assets
+GET {{inventoryUrl}}/assets_list
 Content-Type: application/json
    
 ###
 
 # Создание assets
-POST  {{baseUrl}}/assets/create
+POST  {{inventoryUrl}}/create
 Content-Type: application/json
 
 {
@@ -87,7 +88,7 @@ Content-Type: application/json
 ###
 
 # Ремонта девайса из ЗИП
-POST {{baseUrl}}/assets/repair
+POST {{inventoryUrl}}/repair
 Content-Type: application/json
 
 {
@@ -99,7 +100,7 @@ Content-Type: application/json
 ###
 
 # Модернизация устройства
-POST {{baseUrl}}/assets/modernization
+POST {{inventoryUrl}}/modernization
 Content-Type: application/json
 
 {
