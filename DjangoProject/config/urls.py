@@ -19,5 +19,5 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('apps/api_netbox.urls')),
+    path('api/', include('apps.netbox_api.urls')),
 ]

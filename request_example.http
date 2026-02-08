@@ -1,6 +1,6 @@
 # примеры API-запросов
 
-@baseUrl = http://127.0.0.1:8000
+@baseUrl = http://127.0.0.1:8000/api
 
 ###
 
@@ -10,15 +10,72 @@ Content-Type: application/json
    
 ###
 
-# создание связи
-POST {{baseUrl}}/assets/to_device
+# Создание assets
+POST  {{baseUrl}}/assets/create
 Content-Type: application/json
 
 {
-    "device_id": 147,
-    "asset_ids": [76,95],
+    "items": [
+        {
+            "inventoryitem_type_id": 1,
+            "count": 2,
+            "serials": ["SN0012", "SN0021"]
+        },
+        {
+            "inventoryitem_type_id": 2,
+            "count": 3,
+            "serials": [] 
+        }
+    ],
+    "storage_location_id": 38,
+    "delivery_task": "input"
+}   
+###
+
+# Ремонта девайса из ЗИП
+POST {{baseUrl}}/assets/repair
+Content-Type: application/json
+
+{
+    "device_id": 1111,
+    "asset_ids": [3,4],
     "jira_task": "DC-1647"
 }
+
+###
+
+# Модернизация устройства
+POST {{baseUrl}}/assets/modernization
+Content-Type: application/json
+
+{
+    "device_id": 1111,
+    "asset_ids": [6,7,8],
+    "jira_task": "DC-7461"
+}
+
+
+
+
+
+###
+
+#  получение списка сайтов
+GET {{baseUrl}}/site_location
+Content-Type: application/json
+
+###
+
+# 
+POST  {{baseUrl}}/assets/modernization
+Content-Type: application/json
+
+{
+    "asset_ids": [380], 
+    "device_id": 147, 
+    "jira_task": "test111"
+}
+
 
 ### 
 
@@ -70,44 +127,6 @@ Content-Type: application/json
     {"dev_a": "network_test", "port_a": "et-0/0/14", "dev_b": "test73", "port_b": "Gig-E 1", "int_type": "1000base-t"},
     {"dev_a": "network_test", "port_a": "et-0/0/16", "dev_b": "test73", "port_b": "Gig-E 2", "int_type": "1000base-t"}
 ]
-
+sabled with A
 ###
 
-#  получение списка сайтов
-GET {{baseUrl}}/site_location
-Content-Type: application/json
-
-###
-
-# 
-POST  {{baseUrl}}/assets/modernization
-Content-Type: application/json
-
-{
-    "asset_ids": [380], 
-    "device_id": 147, 
-    "jira_task": "test111"
-}
-
-###
-
-# 
-POST  {{baseUrl}}/assets/create
-Content-Type: application/json
-
-{
-    "items": [
-        {
-            "inventoryitem_type_id": 430,
-            "count": 2,
-            "serials": ["SN0012", "SN0021"]
-        },
-        {
-            "inventoryitem_type_id": 429,
-            "count": 3,
-            "serials": [] 
-        }
-    ],
-    "storage_location_id": 6,
-    "delivery_task": "input"
-}

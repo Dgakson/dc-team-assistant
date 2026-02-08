@@ -21,7 +21,7 @@ load_dotenv(BASE_DIR / '.env')
 
 # Читаем переменные
 NETBOX_URL = os.getenv('NETBOX_URL_LOCAL')
-NETBOX_TOKEN = os.getenv('NETBOX_TOKEN_LOCAL')
+NETBOX_TOKEN = os.getenv('NETBOX_TOKEN_LOCAL_TWO')
 JIRA_URL = os.getenv('JIRA_URL')
 
 # Quick-start development settings - unsuitable for production
@@ -33,7 +33,7 @@ SECRET_KEY = 'django-insecure-cjopmy*=6-6(#3e49%n-3dg9n68e$a0&)rp%4^0&ra2!lzpfe_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -46,9 +46,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework_simplejwt',
 
     'apps.netbox_api',
-
+    'apps.users',
 ]
 
 MIDDLEWARE = [
